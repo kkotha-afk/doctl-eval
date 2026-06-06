@@ -9,7 +9,7 @@ All generation runs against the **DigitalOcean Serverless Inference** API
 (OpenAI-compatible). Each issue is its own inference request — no batching — so every
 call has its own cost, latency, retry, and fallback path.
 
-> **Running application:** _<ADD YOUR DEPLOYED URL HERE>_
+> **Running application:** https://fde-eval-aja3a.ondigitalocean.app/
 
 ---
 
@@ -88,8 +88,7 @@ so the dashboard is populated immediately. To re-run inference yourself, use the
 
 The container is self-contained and stateless, so any container host works. On
 **DigitalOcean App Platform**: push this repo, create an App from the Dockerfile, set
-`SI_API_KEY` as an encrypted env var, and set the HTTP port to `8501`. Put the resulting
-URL at the top of this README. (Locally, `docker run` as above is enough to review it.)
+`SI_API_KEY` as an encrypted env var, and set the HTTP port to `8501`. 
 
 ### Environment variables
 
