@@ -299,8 +299,11 @@ def render_ops(corpus_tag: str, a: str, b: str):
     def block(name, m):
         st.markdown(f"**{display_name(name)}**  · concurrency={m['concurrency']} · prompt={m['prompt_version']}")
         c = st.columns(3)
-        c[0].metric("Total cost", f"${m['total_cost_usd']:.4f}")
-        c[1].metric("Cost / call", f"${m['cost_per_call_usd']*1000:.4f} /1k")
+        c[0].metric("Total cost", f"${m['total_cost_usd']:.4f}",
+                    help=f"For all {m['n_issues']} issues in this run.")
+        c[1].metric("Cost / 1k calls", f"${m['cost_per_call_usd']*1000:.4f}",
+                    help=f"Per-call cost ${m['cost_per_call_usd']:.6f} × 1000. "
+                         f"This run was {m['n_issues']} calls, so this is an extrapolation to 1k.")
         c[2].metric("Wall-clock", f"{m['wall_clock_s']:.1f}s")
         c = st.columns(3)
         c[0].metric(f"p50 latency @c={m['concurrency']}", f"{m['latency_p50_s']:.2f}s")
