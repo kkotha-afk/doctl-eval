@@ -1,0 +1,33 @@
+# DigitalOcean App Platform spec for the eval dashboard.
+# Use via the Control Panel (Create App -> it auto-detects this) or:
+#   doctl apps create --spec .do/app.yaml
+#
+# Replace YOUR_GH_USERNAME below with your GitHub account, and set the real
+# SI_API_KEY in the Control Panel (Settings -> the web component -> Environment
+# Variables) so the secret is never committed to git.
+name: doctl-eval
+region: nyc
+services:
+  - name: web
+    # Build straight from the Dockerfile in the repo root.
+    dockerfile_path: Dockerfile
+    source_dir: /
+    github:
+      repo: YOUR_GH_USERNAME/doctl-eval
+      branch: main
+      deploy_on_push: true
+    # The container binds to $PORT, which App Platform sets to this value.
+    http_port: 8501
+    instance_count: 1
+    # basic-xxs (512MB) usually works; bump to basic-xs (1GB) if it OOMs on load.
+    instance_size_slug: basic-xxs
+    health_check:
+      http_path: /_stcore/health
+    envs:
+      - key: SI_API_KEY
+        scope: RUN_TIME
+        type: SECRET
+        value: "SET_THIS_IN_THE_CONTROL_PANEL"
+      - key: CONCURRENCY
+        scope: RUN_TIME
+        value: "8"
