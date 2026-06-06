@@ -1,0 +1,15 @@
+{"number": 312, "label": "enhancement", "note": "snapshot returns non-actionable action ID; request to return useful image ID"}
+{"number": 347, "label": "question", "note": "OS-level file permission denied; user asking for help, not a doctl defect"}
+{"number": 425, "label": "bug", "note": "maintainer=question but command freezes/hangs = defect"}
+{"number": 567, "label": "bug", "note": "maintainer=question but wrong disk/VCPU on creation = defect"}
+{"number": 795, "label": "question", "note": "confusion about expected DOKS node deletion behavior"}
+{"number": 845, "label": "bug", "note": "maintainer=enhancement but dumping full webpage to stdout = broken output"}
+{"number": 869, "label": "enhancement", "note": "golint code-quality chore; not user-facing defect"}
+{"number": 889, "label": "documentation", "note": "maintainer=bug but missing size-unit documentation"}
+{"number": 979, "label": "documentation", "note": "maintainer=bug but fixing a dangerous documented command"}
+{"number": 1190, "label": "enhancement", "note": "request to create a new AppSpec JSON Schema artifact"}
+{"number": 1407, "label": "security", "note": "maintainer=bug but token printed to stdout = credential exposure (rule 1)"}
+{"number": 1418, "label": "documentation", "note": "maintainer=bug but fish completion instructions unclear/missing"}
+{"number": 1516, "label": "documentation", "note": "docs claim min-nodes default 0 but behavior rejects it; ambiguous, treated as doc error"}
+{"number": 1534, "label": "documentation", "note": "maintainer=bug but generated project.yml attributes undocumented"}
+{"number": 1683, "label": "bug", "note": "performance defect: --after filter not pushed to API causing full pagination"}

@@ -1,0 +1,11 @@
+# Inference client (OpenAI-compatible -> DigitalOcean Serverless Inference)
+openai>=1.40,<2.0
+# Env loading
+python-dotenv>=1.0
+# UI
+streamlit>=1.36
+# Data wrangling / tables / charts in the UI
+pandas>=2.1
+numpy>=1.26
+# HTTP for GitHub ingestion (openai brings httpx, but pin it explicitly for ingest)
+httpx>=0.27
