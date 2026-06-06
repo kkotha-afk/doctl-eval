@@ -79,7 +79,7 @@ def display_name(model_id: str) -> str:
 
 
 # --- leaderboard -----------------------------------------------------------
-def render_leaderboard(corpus_tag: str):
+def render_leaderboard(corpus_tag: str, a: str | None = None, b: str | None = None):
     st.subheader("Broader evaluation — all candidates on the gold set")
     st.caption(
         "The two recommended models are the **output** of this sweep, not an assumption. "
@@ -96,8 +96,10 @@ def render_leaderboard(corpus_tag: str):
         sc = scoring.score_against_gold(res, g)
         meta = res["meta"]
         m = config.CANDIDATES_BY_ID.get(mid)
+        pick = "A" if mid == a else ("B" if mid == b else "")
         rows.append({
-            "Model": display_name(mid),
+            "Compared": pick,
+            "Model": display_name(mid) + (" ★" if mid in RECOMMENDED else ""),
             "Type": ("frontier" if m and not m.open_weight else "open-weight") + (" · reasoning" if m and m.reasoning else ""),
             "Accuracy": sc["accuracy"],
             "Macro-F1": sc["macro_f1"],
@@ -107,23 +109,32 @@ def render_leaderboard(corpus_tag: str):
             "Throughput (rps)": meta["throughput_rps"],
             "Fails": sc["n_unclassified"],
             "_is_rec": mid in RECOMMENDED,
+            "_is_pick": pick != "",
         })
     if not rows:
         st.info("No gold results yet. Run the sweep: `python harness/runner.py --all-candidates --corpus gold`")
         return
     df = pd.DataFrame(rows).sort_values("Accuracy", ascending=False).reset_index(drop=True)
 
-    def highlight_rec(row):
-        return ["background-color: #14432a" if row["_is_rec"] else "" for _ in row]
+    def highlight(row):
+        # Semi-transparent tints so they stay readable in BOTH light and dark themes.
+        if row["_is_pick"]:
+            css = "background-color: rgba(255,193,7,0.30)"     # amber = your A/B picks
+        elif row["_is_rec"]:
+            css = "background-color: rgba(38,166,91,0.22)"     # green = recommended pair
+        else:
+            css = ""
+        return [css for _ in row]
 
-    show = df.drop(columns=["_is_rec"])
-    styler = (df.style.apply(highlight_rec, axis=1)
+    styler = (df.style.apply(highlight, axis=1)
               .format({"Accuracy": "{:.1%}", "Macro-F1": "{:.3f}",
                        "Cost/correct ($)": "{:.5f}", "Gold cost ($)": "{:.4f}",
                        "p95 (s)": "{:.2f}", "Throughput (rps)": "{:.1f}"})
-              .hide(axis="columns", subset=["_is_rec"]))
+              .hide(axis="columns", subset=["_is_rec", "_is_pick"]))
     st.dataframe(styler, width="stretch", hide_index=True)
-    st.caption("Highlighted rows = the two models recommended for production. "
+    st.caption("★ / green = the two models recommended for production. "
+               "**Amber rows = your current Model A / B picks** (sidebar) — those two selectors "
+               "drive the **Scored**, **Unscored**, and **Operational** tabs, not this leaderboard. "
                "Cost/correct = dollars spent on the gold subset ÷ correct classifications.")
 
 
@@ -382,7 +393,7 @@ def main():
     tabs = st.tabs(["🏆 Leaderboard", "🎯 Scored (A vs B)", "🔀 Unscored (A vs B)",
                     "⚙️ Operational", "📋 Run / methodology"])
     with tabs[0]:
-        render_leaderboard("gold" if available_models("gold") else corpus_tag)
+        render_leaderboard("gold" if available_models("gold") else corpus_tag, a, b)
     with tabs[1]:
         if a and b:
             render_scored(corpus_tag, a, b)
